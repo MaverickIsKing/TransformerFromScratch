@@ -12,3 +12,9 @@ wheels/
 .DS_Store
 
 .vscode
+
+runs/
+
+weights/
+
+*.json
