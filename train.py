@@ -10,7 +10,7 @@ from dataset import BilingualDataset, casual_mask
 from model import build_transformer
 from tqdm import tqdm
 from pathlib import Path
-from config import get_wights_file_path, get_config
+from config import get_weights_file_path, get_config
 from torch.utils.tensorboard import SummaryWriter
 import warnings
 import numpy
@@ -128,7 +128,7 @@ def get_model(config, vocab_src_len, vocab_tgt_len):
 
 def train_model(config):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    print(f'Using device {device}')
+    print(f'Using {device}')
 
     Path(config['model_folder']).mkdir(parents=True, exist_ok=True)
 
@@ -142,7 +142,7 @@ def train_model(config):
     initial_epoch = 0
     global_step = 0
     if config['preload']:
-        model_filename = get_wights_file_path(config, config['preload'])
+        model_filename = get_weights_file_path(config, config['preload'])
         print(f'Preloading model {model_filename}')
         state = torch.load(model_filename)
         initial_epoch = state['epoch'] + 1
@@ -182,7 +182,7 @@ def train_model(config):
 
             global_step += 1
 
-        model_filename = get_wights_file_path(config, f'{epoch:02d}')
+        model_filename = get_weights_file_path(config, f'{epoch:02d}')
         torch.save({
             'epoch': epoch,
             'model_state_dict': model.state_dict(),
