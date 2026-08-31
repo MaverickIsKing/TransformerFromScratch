@@ -99,7 +99,7 @@ class MultiHeadAttentionBlock(nn.Module):
         key = key.view(key.shape[0], key.shape[1], self.h, self.d_k).transpose(1, 2)
         value = value.view(value.shape[0], value.shape[1], self.h, self.d_k).transpose(1, 2)
 
-        x, self.attension_scores = MultiHeadAttentionBlock.attention(query, key, value, mask, self.dropout)
+        x, self.attention_scores = MultiHeadAttentionBlock.attention(query, key, value, mask, self.dropout)
 
         # (batch, h, seq_len, d_k) -> (batch, seq_len, h, d_k) -> (batch, deq_len, d_model)
         x = x.transpose(1,2).contiguous().view(x.shape[0], -1, self.h * self.d_k)
