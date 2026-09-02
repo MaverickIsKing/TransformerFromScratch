@@ -25,8 +25,8 @@ class RotaryPositionalEmbedding(nn.Module):
         self.theta = theta
 
         cos, sin = RotaryPositionalEmbedding.get_rotary_embedding(self.d_k, seq_len, theta)
-        self.register_buffer('cos_cached', cos)
-        self.register_buffer('sin_cached', sin)
+        self.register_buffer('cos_cached', cos.unsqueeze(0).unsqueeze(0))
+        self.register_buffer('sin_cached', sin.unsqueeze(0).unsqueeze(0))
 
     @staticmethod
     def get_rotary_embedding(dim: int, seq_len: int, theta: float = 10000.0):
@@ -50,15 +50,13 @@ class RotaryPositionalEmbedding(nn.Module):
 
     def forward(self, q, k):
         q_len = q.shape[2]
-        qcos = self.cos_cached[:q_len].requires_grad_(False)
-        qsin = self.sin_cached[:q_len].requires_grad_(False)
-        qcos = qcos.unsqueeze(0).unsqueeze(0)
-        qsin = qsin.unsqueeze(0).unsqueeze(0)
+        qcos = self.cos_cached[:,:,:q_len,:].requires_grad_(False)
+        qsin = self.sin_cached[:,:,:q_len,:].requires_grad_(False)
+
         k_len = k.shape[2]
-        kcos = self.cos_cached[:k_len].requires_grad_(False)
-        ksin = self.sin_cached[:k_len].requires_grad_(False)
-        kcos = kcos.unsqueeze(0).unsqueeze(0)
-        ksin = ksin.unsqueeze(0).unsqueeze(0)
+        kcos = self.cos_cached[:,:,:k_len,:].requires_grad_(False)
+        ksin = self.sin_cached[:,:,:k_len,:].requires_grad_(False)
+
 
         q_rot = (q * qcos) + (RotaryPositionalEmbedding.rotate_half(q) * qsin)
         k_rot = (k * kcos) + (RotaryPositionalEmbedding.rotate_half(k) * ksin)
