@@ -20,7 +20,7 @@ class PositionalEmbedding(nn.Module):
         self.d_model = d_model
         self.seq_len = seq_len
         self.dropout = nn.Dropout(dropout)
-
+        
         # create a matrix of dim (seq_len, d_model)
         pe = torch.zeros(seq_len, d_model)
         # create a vector of shape (seq_len, 1)
