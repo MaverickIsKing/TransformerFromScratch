@@ -57,11 +57,15 @@ class RotaryPositionalEmbedding(nn.Module):
         kcos = self.cos_cached[:,:,:k_len,:].requires_grad_(False)
         ksin = self.sin_cached[:,:,:k_len,:].requires_grad_(False)
 
+        q_dtype = q.dtype
+        k_dtype = k.dtype
+
+        q, k = q.float(), k.float()
 
         q_rot = (q * qcos) + (RotaryPositionalEmbedding.rotate_half(q) * qsin)
         k_rot = (k * kcos) + (RotaryPositionalEmbedding.rotate_half(k) * ksin)
 
-        return self.dropout(q_rot), self.dropout(k_rot)
+        return self.dropout(q_rot.to(q_dtype)), self.dropout(k_rot.to(k_dtype))
 
 class LayerNormalization(nn.Module):
     def __init__(self, features: int, eps: float = 10**-6) -> None:

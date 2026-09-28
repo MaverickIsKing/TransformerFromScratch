@@ -94,7 +94,7 @@ def get_ds(config):
     tokenizer_src = get_or_build_tokenizer(config, ds_raw, config["lang_src"])
     tokenizer_tgt = get_or_build_tokenizer(config, ds_raw, config["lang_tgt"])
 
-    # 90 for train 10 for valid
+    # 90 for train 10 for validate
     train_ds_size  = int(0.9 * len(ds_raw))
     val_ds_size = len(ds_raw) - train_ds_size
     train_ds_raw, val_ds_raw = random_split(ds_raw, [train_ds_size, val_ds_size])
